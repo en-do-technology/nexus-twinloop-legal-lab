@@ -40,9 +40,9 @@ It should not create the impression of representation, filing, or guaranteed res
 
 This prototype explores a simple principle:
 
-> **No source, no legal claim.  
+> No source, no legal claim.  
 > No verified jurisdiction, no jurisdiction-specific answer.  
-> No service authority, no attorney-like action.**
+> No service authority, no attorney-like action.
 
 ---
 
@@ -50,156 +50,156 @@ This prototype explores a simple principle:
 
 ### 1. Source boundary
 
-If the system cannot find a supporting source in the current legal index, it returns:
+If the system cannot find a supporting source in the current legal index, it returns `UNVERIFIED`.
 
-```text
-UNVERIFIED
+This is intentional. In legal AI, a refusal or uncertainty marker can be safer than a confident unsupported answer.
 
-This is intentional.
-In legal AI, a refusal or uncertainty marker can be safer than a confident unsupported answer.
+### 2. Jurisdiction boundary
 
-2. Jurisdiction boundary
-
-If the user asks about a specific U.S. state or the District of Columbia, but the system has no verified jurisdiction-specific corpus connected, it returns:
-
-JURISDICTION_UNRESOLVED
+If the user asks about a specific U.S. state or the District of Columbia, but the system has no verified jurisdiction-specific corpus connected, it returns `JURISDICTION_UNRESOLVED`.
 
 The prototype should not use a generic legal placeholder as if it were California, Texas, Nevada, New York, or D.C. law.
 
-3. Service boundary
+### 3. Service boundary
 
-If the user asks the system to represent them, file documents, draft litigation documents, act as their lawyer, or guarantee an outcome, it returns:
-
-SERVICE_BOUNDARY
+If the user asks the system to represent them, file documents, draft litigation documents, act as their lawyer, or guarantee an outcome, it returns `SERVICE_BOUNDARY`.
 
 The prototype does not create an attorney-client relationship and does not perform legal representation.
 
-4. Out-of-scope boundary
+### 4. Out-of-scope boundary
 
-If the question is not legal, the prototype returns:
+If the question is not legal, the prototype returns `OUT_OF_SCOPE`.
 
-OUT_OF_SCOPE
-What the prototype includes
+---
+
+## What the prototype includes
 
 The current Python file includes:
 
-LegalRiskDetector
-JurisdictionDetector
-ServiceBoundaryDetector
-SimpleVectorStore
-LexicalEmbeddingProvider
-ExtractiveStubLLM
-ModelService
-CanaryDeployer
-QA metrics runner
+- `LegalRiskDetector`
+- `JurisdictionDetector`
+- `ServiceBoundaryDetector`
+- `SimpleVectorStore`
+- `LexicalEmbeddingProvider`
+- `ExtractiveStubLLM`
+- `ModelService`
+- `CanaryDeployer`
+- `QA` metrics runner
 
 The implementation is intentionally simple:
 
-no external dependencies;
-no production database;
-no real LLM call;
-no real legal corpus;
-no semantic embedding provider;
-no legal correctness benchmark.
+- no external dependencies;
+- no production database;
+- no real LLM call;
+- no real legal corpus;
+- no semantic embedding provider;
+- no legal correctness benchmark.
 
 This simplicity is intentional. The purpose is to make the safety architecture visible and easy to inspect.
 
-Demo metrics
+---
+
+## Demo metrics
 
 The included demo test set checks legal detection, service-boundary refusal, jurisdiction-boundary refusal, out-of-scope refusal, retrieval coverage, and unsupported legal claims.
 
 Current demo output is expected to show:
 
-legal_detection_accuracy       = 100%
-subdomain_routing_accuracy     = 100%
-unsupported_claim_rate         = 0%
-retrieval_coverage_rate        = about 24%
-covered_topic_retrieval_rate   = 100%
-service_boundary_refusal_rate  = 100%
-jurisdiction_boundary_rate     = 100%
-out_of_scope_refusal_rate      = 100%
-legal_correctness              = not measured
-jurisdiction_coverage          = not measured
+- `legal_detection_accuracy`: 100%
+- `subdomain_routing_accuracy`: 100%
+- `unsupported_claim_rate`: 0%
+- `retrieval_coverage_rate`: about 24%
+- `covered_topic_retrieval_rate`: 100%
+- `service_boundary_refusal_rate`: 100%
+- `jurisdiction_boundary_rate`: 100%
+- `out_of_scope_refusal_rate`: 100%
+- `legal_correctness`: not measured
+- `jurisdiction_coverage`: not measured
 
 Important: low retrieval coverage is expected because the prototype contains only a few placeholder legal documents.
 
-The key safety metric is:
-
-unsupported_claim_rate = 0%
+The key safety metric is `unsupported_claim_rate = 0%`.
 
 That means the system should not make a legal assertion without a retrieved supporting source.
 
-Run the demo
-python nexus_twinloop_legal_us_lab_v33_fix.py
+---
+
+## Run the demo
+
+Run:
+
+`python nexus_twinloop_legal_us_lab_v33_fix.py`
 
 The script will run the public demo test cases and print the QA report.
 
-Important limitations
+---
 
-This repository does not contain a production-ready legal AI system.
+## Important limitations
+
+This repository does **not** contain a production-ready legal AI system.
 
 It does not include:
 
-verified legal sources;
-state-specific legal corpora;
-city or county ordinances;
-attorney-reviewed legal content;
-real semantic embeddings;
-real vector database integration;
-production API;
-authentication;
-legal correctness evaluation;
-compliance review.
+- verified legal sources;
+- state-specific legal corpora;
+- city or county ordinances;
+- attorney-reviewed legal content;
+- real semantic embeddings;
+- real vector database integration;
+- production API;
+- authentication;
+- legal correctness evaluation;
+- compliance review.
 
 The seeded legal documents are illustrative placeholders only.
 
-Next research direction
+---
 
-The next step is not simply to add a larger model.
+## Next research direction
 
 The next step is to build a structured legal knowledge layer:
 
-official legal sources
-→ REG containers
-→ jurisdiction-specific metadata
-→ applicability rules
-→ red flags
-→ citations
-→ review status
-→ embeddings / retrieval
-→ verifier
-→ safer legal AI answers
+- official legal sources;
+- REG containers;
+- jurisdiction-specific metadata;
+- applicability rules;
+- red flags;
+- citations;
+- review status;
+- embeddings and retrieval;
+- verifier;
+- safer legal AI answers.
 
-We call this direction:
-
-REG Factory
+We call this direction **REG Factory**.
 
 A REG container is a structured legal unit that may include:
 
-jurisdiction;
-authority;
-official citation;
-effective date;
-applicability;
-exceptions;
-red flags;
-required user facts;
-source excerpts;
-verification status;
-retrieval metadata.
-Project status
+- jurisdiction;
+- authority;
+- official citation;
+- effective date;
+- applicability;
+- exceptions;
+- red flags;
+- required user facts;
+- source excerpts;
+- verification status;
+- retrieval metadata.
+
+---
+
+## Project status
 
 This is an early laboratory prototype.
 
 It is published for research, discussion, and architectural transparency.
 
-The broader project context is:
+The broader project context is **AiLawyer.world**.
 
-AiLawyer.world
+The development line is **EN-DO Technology**.
 
-The development line is:
+---
 
-EN-DO Technology
-License
+## License
 
 Apache License 2.0
