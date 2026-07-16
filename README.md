@@ -128,7 +128,7 @@ That means the system should not make a legal assertion without a retrieved supp
 
 Run:
 
-`python nexus_twinloop_legal_us_lab_v33_fix.py`
+`python nexus_twinloop_legal_us_lab_v33.py`
 
 The script will run the public demo test cases and print the QA report.
 
